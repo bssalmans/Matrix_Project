@@ -1,0 +1,164 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace BS_Matrix_Console
+{
+    // Rational class for use in the Matrix program
+    class Rational
+    {
+        // constructor, takes two ints (a numerator and a denominator)
+        public Rational(int numerator, int denominator)
+        {
+            this.numerator = numerator;
+            this.denominator = denominator;
+        }
+
+        // integer constructor, takes one int (a numerator) and sets the 
+        //   denominator to one
+        public Rational(int integer)
+        {
+            numerator = integer;
+            denominator = 1;
+        }
+
+        // property for numerator
+        public int Numerator
+        {
+            get { return numerator; }
+            set { numerator = value; }
+        }
+
+        // property for denominator
+        public int Denominator
+        {
+            get { return denominator; }
+            set { denominator = value; }
+        }
+
+        // returns the greatest common divisor of the numerator and the denominator
+        public int GCD()
+        {
+            int a = numerator;
+            int b = denominator;
+            int remainder;
+
+            while (b != 0)
+            {
+                remainder = a % b;
+                a = b;
+                b = remainder;
+            }
+
+            return a;
+        }
+
+        // reduces the calling Rational to lowest terms
+        public void Reduce()
+        {
+            int gcd = this.GCD();
+            numerator = numerator / gcd;
+            denominator = denominator / gcd;
+        }
+
+        // override implicit Rational cast operator
+        public static implicit operator Rational(int myInteger)
+        {
+            return new Rational(myInteger);
+        }
+
+        // override explicit int cast operator (WARNING: DATA LOST IN CAST)
+        public static explicit operator int(Rational myRational)
+        {
+            return myRational.numerator / myRational.denominator;
+        }
+
+        // override boolean equals operator
+        public static bool operator ==(Rational lhs, Rational rhs)
+        {
+            lhs.Reduce();
+            rhs.Reduce();
+            if (lhs.denominator == rhs.denominator && lhs.numerator == rhs.numerator)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        // override boolean not-equal operator
+        public static bool operator !=(Rational lhs, Rational rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        // override virtual Equals method for Object base class
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Rational))
+            {
+                return false;
+            }
+            return this == (Rational)obj;
+        }
+
+        // override addition operator
+        public static Rational operator +(Rational lhs, Rational rhs)
+        {
+            if (lhs.denominator == rhs.denominator)
+            {
+                return new Rational(lhs.numerator + rhs.numerator, lhs.denominator);
+            }
+
+            int firstProduct = lhs.numerator * rhs.denominator;
+            int secondProduct = rhs.numerator * lhs.denominator;
+            Rational summation = new Rational(firstProduct + secondProduct, lhs.denominator * rhs.denominator);
+            summation.Reduce();
+            return summation;
+        }
+
+        // override subtraction operator
+        public static Rational operator -(Rational lhs, Rational rhs)
+        {
+            if (lhs.denominator == rhs.denominator)
+            {
+                return new Rational(lhs.numerator - rhs.numerator, lhs.denominator);
+            }
+
+            int firstProduct = lhs.numerator * rhs.denominator;
+            int secondProduct = rhs.numerator * lhs.denominator;
+            Rational difference = new Rational(firstProduct - secondProduct, lhs.denominator * rhs.denominator);
+            difference.Reduce();
+            return difference;
+        }
+
+        // override multiplication operator
+        public static Rational operator *(Rational lhs, Rational rhs)
+        {
+            Rational multiplicand = new Rational(lhs.numerator * rhs.numerator, lhs.denominator * rhs.denominator);
+            multiplicand.Reduce();
+            return multiplicand;
+        }
+
+        // override division operator
+        public static Rational operator /(Rational lhs, Rational rhs)
+        {
+            Rational dividend = new Rational(lhs.numerator * rhs.denominator, lhs.denominator * rhs.numerator);
+            dividend.Reduce();
+            return dividend;
+        }
+
+        // override virtual ToString method for object base class
+        public override string ToString()
+        {
+            String s;
+            if (denominator == 1) { s = numerator.ToString(); }
+            else { s = numerator.ToString() + "/" + denominator.ToString(); }
+            return s;
+        }
+
+        // private members
+        private int numerator;
+        private int denominator;
+    }
+}
