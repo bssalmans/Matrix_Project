@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace BS_Matrix_Console
+{
+    class Matrix
+    {
+        // constructor for Matrix takes two integer args, one for number of rows and one
+        //    for number of columns, and an array of vectors
+        //    <--NEED TO CHECK NUMBER OF VECTORS MATCHES COLS (EXCEPTION)
+        public Matrix(int rows, int columns, params Vector[] inVectors)
+        {
+            this.columns = columns;
+            this.rows = rows;
+            vectors = new Vector[columns];
+            int cnt = 0;
+            foreach (Vector v in inVectors)
+            {
+                vectors[cnt++] = new Vector(v.Elements);
+            }
+        }
+
+        // constructor for Matrix takes two integer args, one for number of rows and one
+        //    for number of columns, and a variable number of Rational elements to
+        //    populate matrix <--NEED TO CHECK NUMBER OF ARGS (EXCEPTION)
+        public Matrix(int rows, int columns, params Rational[] elements)
+        {
+            this.columns = columns;
+            this.rows = rows;
+            vectors = new Vector[columns];
+            int cnt = 0;
+            for (int b = 0; b < columns; b++)
+            {
+                Rational[] vectorElements = new Rational[rows];
+                for (int a = 0; a < rows; a++)
+                {
+                    vectorElements[a] = elements[cnt++];
+                }
+                vectors[b] = new Vector(vectorElements);
+            }
+        }
+
+        // accessor for rows
+        public int Rows
+        {
+            get { return Rows; }
+        }
+
+        // accessor for columns
+        public int Columns
+        {
+            get { return Columns; }
+        }
+
+        // override virtual ToString method for object base class
+        public override string ToString()
+        {
+            string s = "( {";
+            for (int i = 0; i < columns - 1; i++)
+            {
+                if (i > 0) { s += "}, "; }
+                s += vectors[i].ToString();
+            }
+            s += vectors[columns - 1] + "} )";
+            return s;
+        }
+
+        private int rows;
+        private int columns;
+        private Vector[] vectors;
+        
+    }
+}
