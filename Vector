@@ -1,0 +1,170 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace BS_Matrix_Console
+{
+    // Vector class for use in Matrix program
+    class Vector
+    {
+        // constructor takes a variable amount of parameters and creates a vector
+        //   in R, where R is the number of arguments
+        public Vector(params Rational[] elements)
+        {
+            this.dimension = elements.Length;
+            this.elements = new Rational[dimension];
+            int ctr = 0;
+            foreach (Rational i in elements)
+            {
+                this.elements[ctr++] = i;
+            }
+        }
+
+        // constrctor for Vector takes one int for R and a Rational array 
+        //   of elements arg
+        public Vector(int dimension, Rational[] elements)
+        {
+            this.dimension = dimension;
+            this.elements = new Rational[dimension];
+            // populate element array
+            for (int i = 0; i < dimension; i++)
+            {
+                this.elements[i] = elements[i];
+            }
+        }
+
+        // constructor for Vector takes one int arg for R and an array
+        //   of int arg which is explicitly cast to Rational
+        public Vector(int dimension, int[] elements)
+        {
+            this.dimension = dimension;
+            this.elements = new Rational[dimension];
+            // populate element array
+            for (int i = 0; i < dimension; i++)
+            {
+                this.elements[i] = (Rational)elements[i];
+            }
+        }
+
+        // accessor for dimension
+        public int Dimension
+        {
+            get { return dimension; }
+        }
+
+        // accessor for elements
+        public Rational[] Elements
+        {
+            get { return elements; }
+        }
+
+        // override boolean equals operator
+        public static bool operator ==(Vector lhs, Vector rhs)
+        {
+            // check dimensions, false on mismatch
+            if (lhs.dimension != rhs.dimension)
+            {
+                return false;
+            }
+            // check elements, false on mismatch
+            for (int i = 0; i < lhs.dimension; i++)
+            {
+                if (lhs.elements[i] != rhs.elements[i])
+                    return false;
+            }
+            return true;
+        }
+
+        // override boolen not-equal operator
+        public static bool operator !=(Vector rhs, Vector lhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        // override virtual Equals method for Object base class
+        public override bool Equals(object obj)
+        {
+            if(!(obj is Vector))
+            {
+                return false;
+            }
+            return this == (Vector)obj;
+        }
+
+        // override addition operator
+        public static Vector operator +(Vector lhs, Vector rhs)
+        {
+            // insure dimensions of vectors match
+            if (lhs.dimension != rhs.dimension)
+            {
+                Console.WriteLine("These vectors have different dimensions, addition failed\n");
+                return null;
+            }
+
+            Rational[] summation = new Rational[lhs.dimension];
+
+            // vector addition is acheived by adding element ai to element bi,
+            //   where a and b are vectors and i is the index of the element.
+            for (int i = 0; i < lhs.dimension; i++)
+            {
+                summation[i] = lhs.elements[i] + rhs.elements[i];
+            }
+
+            Vector sumVector = new Vector(lhs.dimension, summation);
+            return sumVector;
+        }
+
+        // override subtraction operator
+        public static Vector operator -(Vector lhs, Vector rhs)
+        {
+            // insure dimensions of vectors match
+            if (lhs.dimension != rhs.dimension)
+            {
+                Console.WriteLine("These vectors have different dimensions, subtraction failed\n");
+                return null;
+            }
+
+            Rational[] difference = new Rational[lhs.dimension];
+
+            // vector subtraction is achieved by subtracting element bi from ai,
+            //   where a and b are vectors and i is the index of the element.
+            for (int i = 0; i < lhs.dimension; i++)
+            {
+                difference[i] = lhs.elements[i] - rhs.elements[i];
+            }
+
+            Vector difVector = new Vector(lhs.dimension, difference);
+            return difVector;
+        }
+
+        // override multiplication operator for scalar multiplication
+        public static Vector operator *(int lhs, Vector rhs)
+        {
+            Rational[] mulArray = new Rational[rhs.dimension];
+            for (int i = 0; i < rhs.dimension; i++)
+            {
+                mulArray[i] = lhs * rhs.elements[i];
+            }
+
+            Vector mulVector = new Vector(rhs.dimension, mulArray);
+            return mulVector;
+        }
+
+        // override virtual ToString method for object base class
+        public override string ToString()
+        {
+            string s = "( ";
+            for (int i = 0; i < dimension - 1; i++)
+            {
+                if( i > 0 ){ s += ", "; }
+                s += elements[i].ToString();
+            }
+            s += elements[dimension - 1] + " )";
+            return s;
+        }
+
+        private int dimension;
+        private Rational[] elements; 
+    }
+}
